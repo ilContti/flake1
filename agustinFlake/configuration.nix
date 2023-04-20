@@ -14,7 +14,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.configurationLimit = 5;
-  boot.loader.timeout = 3;
+  boot.loader.timeout = 1;
 
   networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
@@ -48,12 +48,25 @@
       layout = "es";
       displayManager = {
         lightdm.enable = true;
-        defaultSession = "xfce";
+        defaultSession = "plasma";
       };
-    desktopManager.xfce.enable = true;
+    desktopManager.plasma5.enable = true;
     windowManager.bspwm.enable = true;
     };
   };
+
+  # Plasma packages.
+  environment.plasma5.excludePackages = with pkgs.libsForQt5; [
+    elisa
+    gwenview
+    okular
+    oxygen
+    khelpcenter
+    konsole
+    plasma-browser-integration
+    print-manager
+  ];
+
 
   # Configure keymap in X11
   # services.xserver.layout = "es";
@@ -69,20 +82,31 @@
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
+  # Enable bluetooth.
+  hardware.bluetooth.enable = true;
+
   # Enable touchpad support (enabled default in most desktopManager).
   services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.agustin = {
+    initialPassword = "password";
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-    initialPassword = "password";
   };
+
+  # Steam.
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+  };
+
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    vim wget firefox alacritty git
+    vim wget firefox alacritty git openjdk vscodium mindustry mindustry-server winePackages.unstable jre8 lutris 
   ];
 
   # Fonts
